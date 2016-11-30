@@ -120,7 +120,10 @@ function invalidWriteFile(invalid_lines, raw_array_set) {
     }
     return appendFilePromisified("./invalid_input.txt", invalid_lines_output);
 }
-//takes a string and returns a better representation of it
+/*
+*parameters: a string
+*Takes a string and returns a better representation of it
+*/
 function stringify(str) {
     let arr = str.split(',');
     str = JSON.stringify(arr);
