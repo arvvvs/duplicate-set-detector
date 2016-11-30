@@ -73,16 +73,12 @@ function checkInput(array_of_sorted_sets, raw_array) {
     fs.writeFileSync("output.txt", "Output: \n");
     for (let array_line of array_of_sorted_sets) {
         if (array_line.indexOf('\u2205') !== -1) {
-            // console.log("invalid input");
-            // invalid_input_line_numbers.push(input_line_number);
             fs.appendFileSync("output.txt", "False line " + input_line_number + ":" + " invalid \n")
             invalid_lines++;
         }
         else if (set_freq[array_line] >= 0) {
             set_freq[array_line] += 1;
             duplicate_sets++;
-            // console.log(`${array_line} is a duplicate ${set_freq[array_line]}`)
-            // fs.appendFileSync("output.txt", "False line" + input_line_number + ":" + raw_array[input_line_number - 1] + "is a duplicate\n");
             fs.appendFileSync("output.txt", "False line " + input_line_number+": "+raw_array[input_line_number-1]+"\n");
             if (set_freq[array_line] > highest_freq_set["frequency"]) {
                 highest_freq_set["set"] = array_line;
@@ -97,12 +93,9 @@ function checkInput(array_of_sorted_sets, raw_array) {
             unique_sets++;
             non_duplicate_sets++;
             fs.appendFileSync("output.txt", "True line " + input_line_number+": "+raw_array[input_line_number-1]+"\n");
-            // console.log(`${array_line} is new`)
         }
         input_line_number++;
     }
-    // console.log(highest_freq_set);
-    // return invalid_input_line_numbers;
     console.log(`There were ${unique_sets} unique sets, ${non_duplicate_sets} non duplicate sets, ${duplicate_sets} duplicate sets, ${invalid_lines} invalid sets`);
     console.log(`The set with the most frequent duplicate group was "${highest_freq_set.set}" with ${highest_freq_set.frequency} duplicates`);
 }
@@ -174,7 +167,12 @@ function appendFilePromisified(filename, to_write) {
 }
 //gets the name of the input file
 const file_input = process.argv[2];
-let parsed_arrays = read_and_parse_file('input.txt');
+if(file_input == undefined){
+    console.log('No file given for input')
+    console.log('Program now exiting')
+    process.exit(1);
+}
+let parsed_arrays = read_and_parse_file(file_input);
 invalidWriteFile(parsed_arrays["invalid_lines"], parsed_arrays["raw"]);
 checkInput(parsed_arrays["sorted"], parsed_arrays["raw"]);
 console.log("Duplicate and NonDuplicate lines in output.txt");
