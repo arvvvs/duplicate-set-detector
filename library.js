@@ -23,7 +23,7 @@ function read_and_parse_file(file_to_read) {
         * Because the entire file is in a single string 
         * we find the index of the start of a line and the end of a line 
         * parse that 
-        */ 
+        */
         let end_of_line_index = contents.indexOf("\n", start_of_line_index);
         let raw_content_array = contents.substring(start_of_line_index, end_of_line_index);
         let set_input = (contents.substring(start_of_line_index, end_of_line_index).split(","));
@@ -61,7 +61,6 @@ function checkInput(array_of_sorted_sets) {
     //they've been duplicated
     let set_freq = {};
     let input_line_number = 1;
-    // let invalid_input_line_numbers = [];
     let highest_freq_set = {
         "set": [],
         "frequency": 0
@@ -99,9 +98,24 @@ function invalidWriteFile(invalid_lines, raw_array_set) {
     writeFilePromisified("./invalid_input.txt", 'List of Invalid Inputs-\n');
     appendFilePromisified("./invalid_input.txt", invalid_lines.size + ' lines were invalid out of ' + raw_array_set.length + ' lines\n');
     for (let x of invalid_lines) {
-        invalid_lines_output += ("Line " + x + ": " + raw_array_set[x - 1] + '\n');
+        let k = stringify(raw_array_set[x - 1]);
+        // invalid_lines_output += ("Line " + x + ": " + raw_array_set[x - 1] + '\n');
+        invalid_lines_output += ("Line " + x + ": " + k + '\n');
     }
     return appendFilePromisified("./invalid_input.txt", invalid_lines_output);
+}
+//takes a string and returns a better representation of it
+function stringify(s) {
+    let a = s.split(',');
+    let k = JSON.stringify(a);
+    //removes array brackets
+    let front_regex_array = /^\[/g;
+    let back_regex_array = /\]$/g;
+    k = k.replace(/(?:\\[rn])+/g, "");
+    k = k.replace(front_regex_array, '');
+    k = k.replace(back_regex_array, '');
+    return k;
+
 }
 /*
 * Paramters: name of the file, and string to be written to file 
@@ -139,6 +153,7 @@ function appendFilePromisified(filename, to_write) {
                 });
         });
 }
+//gets the name of the input file
 const file_input = process.argv[2];
 console.time('init time');
 let parsed_arrays = read_and_parse_file('input.txt');

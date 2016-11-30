@@ -1,8 +1,8 @@
 List of Invalid Inputs-
 6 lines were invalid out of 507 lines
-Line 53: ,,,,
-Line 69: A, B, C
-Line 200: ---
-Line 343: This line should be ignored because it's not valid
-Line 375: ,
-Line 391: 50 41 87 95
+Line 53: "","","","",""
+Line 69: "A"," B"," C"
+Line 200: "---"
+Line 343: "This line should be ignored because it's not valid"
+Line 375: "",""
+Line 391: "50 41 87 95"
