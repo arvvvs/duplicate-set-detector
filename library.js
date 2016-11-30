@@ -12,7 +12,7 @@ function readFile(file_to_read) {
     //and adds each line to the array_of_arrays
     let i = 0;
     let line_number = 1;
-    let invalid_lines = [];
+    let invalid_lines = new Set();
     while (i < contents.length) {
         let j = contents.indexOf("\n", i);
         let raw_content_array = contents.substring(i, j);
@@ -21,16 +21,13 @@ function readFile(file_to_read) {
         let set_input = (contents.substring(i, j).split(","));
         let parsed_set = set_input.map((value) => {
             if (isNaN(Number(value)) || Number(value) === 0) {
-                check++;
+                invalid_lines.add(line_number)
                 return '\u2205';
             }
             else {
                 return Number(value);
             }
         });
-        if (check > 0) {
-            invalid_lines.push(line_number);
-        }
         array_of_sorted_sets.push(parsed_set.sort((a, b) => { return a - b }));
         i = j + 1;
         line_number++;
