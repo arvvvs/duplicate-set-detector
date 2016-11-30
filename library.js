@@ -72,6 +72,7 @@ function checkInput(array_of_sorted_sets) {
 function invalidWriteFile(invalid_lines, raw_array_set) {
     let invalid_lines_output = '';
     writeFilePromisified("./invalid_input.txt", 'List of Invalid Inputs-\n');
+    appendFilePromisified("./invalid_input.txt", invalid_lines.size+' lines were invalid out of '+raw_array_set.length+' lines\n');
     for (let x of invalid_lines) {
         invalid_lines_output += ("Line " + x + ": " + raw_array_set[x - 1] + '\n');
     }

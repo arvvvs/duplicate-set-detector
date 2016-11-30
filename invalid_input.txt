@@ -1,4 +1,5 @@
 List of Invalid Inputs-
+6 lines were invalid out of 507 lines
 Line 53: ,,,,
 Line 69: A, B, C
 Line 200: ---
