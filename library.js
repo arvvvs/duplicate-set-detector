@@ -35,7 +35,7 @@ function read_and_parse_file(file_to_read) {
     return { "sorted": array_of_sorted_sets, "raw": raw_input_array, "invalid_lines": invalid_lines_set };
 }
 
-function check_input(array_of_sorted_sets) {
+function checkInput(array_of_sorted_sets) {
     //this will hold the sets as keys and value is number of times
     //they've been duplicated
     let set_freq = {};
@@ -67,17 +67,15 @@ function check_input(array_of_sorted_sets) {
     }
     // console.log(highest_freq_set);
     // return invalid_input_line_numbers;
+    return highest_freq_set;
 }
-function invalid_input_return(invalid_lines, raw_array_set) {
-    const fs = require('fs');
-    let array_output = '';
-    console.time('timer');
+function invalidWriteFile(invalid_lines, raw_array_set) {
+    let invalid_lines_output = '';
     writeFilePromisified("./invalid_input.txt", 'List of Invalid Inputs-\n');
     for (let x of invalid_lines) {
-        array_output += ("Line " + x + ": " + raw_array_set[x - 1] + '\n');
+        invalid_lines_output += ("Line " + x + ": " + raw_array_set[x - 1] + '\n');
     }
-    appendFilePromisified("./invalid_input.txt", array_output);
-    console.timeEnd('timer');
+    return appendFilePromisified("./invalid_input.txt", invalid_lines_output);
 }
 function writeFilePromisified(filename, to_write) {
     const fs = require('fs');
@@ -110,8 +108,10 @@ function appendFilePromisified(filename, to_write) {
 const file_input = process.argv[2];
 console.time('init time');
 let parsed_arrays = read_and_parse_file('input.txt');
-invalid_input_return(parsed_arrays["invalid_lines"], parsed_arrays["raw"]);
-let invalid_lines_set = check_input(parsed_arrays["sorted"]);
+console.time('timer');
+invalidWriteFile(parsed_arrays["invalid_lines"], parsed_arrays["raw"]);
+console.timeEnd('timer');
+checkInput(parsed_arrays["sorted"]);
 // invalid_input_return(invalid_lines, array_input["raw"]);
 console.timeEnd('init time');
 //check_input([["50 41 20"]]);
