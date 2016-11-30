@@ -78,42 +78,15 @@ function invalid_input_return(invalid_lines, raw_array_set) {
     writeFilePromisified("./invalid_input.txt", 'List of Invalid Inputs-\n');
     for (let x of invalid_lines) {
 
-        array_output+=("Line " + x + ": " + raw_array_set[x-1]+'\n');
-        // if (x === 0) {
-            // fs.writeFileSync("./invalid_input.txt", 'List of Invalid Inputs-\n');
-            // (function(){
-            // fs.writeFile("./invalid_input.txt", 'List of Invalid Inputs-\n');
-            // }
-            // )()
-        // }
-        // (function(raw_array_set, x) {
-        //     // console.log(raw_array_set[x - 1]);
-        //     fs.appendFile("./invalid_input.txt", "Line " + x + ": " + raw_array_set[x - 1], function(data, err) {
-        //         if (err) {
-        //             throw err;
-        //         }
-        //     })
-        // })(raw_array_set, invalid_lines[x])
-
+        array_output += ("Line " + x + ": " + raw_array_set[x - 1] + '\n');
     }
-    appendFilePromisified("./invalid_input.txt", array_output); 
+    appendFilePromisified("./invalid_input.txt", array_output);
     console.timeEnd('timer');
-    // fs.writeFile("./invalid_input.txt", 'List of Invalid Inputs-\n', function (data, err) {
-    //     if (err) {
-    //         console.log(err);
-    //     }
-    // });
-    /*    fs.appendFile("./invalid_input.txt", (array_output).join('\n'), function (data, err) {
-            if (err) {
-                console.log(err);
-            }
-        })
-        */
 }
 function writeFilePromisified(filename, to_write) {
     const fs = require('fs');
     return new Promise(
-        function (resolve, reject) {
+        function(resolve, reject) {
             fs.writeFile(filename, to_write,
                 (error, data) => {
                     if (error) {
@@ -127,7 +100,7 @@ function writeFilePromisified(filename, to_write) {
 function appendFilePromisified(filename, to_write) {
     const fs = require('fs');
     return new Promise(
-        function (resolve, reject) {
+        function(resolve, reject) {
             fs.appendFile(filename, to_write,
                 (error, data) => {
                     if (error) {
