@@ -52,69 +52,85 @@ function read_and_parse_file(file_to_read) {
     return { "sorted": array_of_sorted_sets, "raw": raw_input_array, "invalid_lines": invalid_lines_set };
 }
 /*
-* Parameters: An array containing sorted and parsed arrays
+* Parameters: An array containing sorted and parsed arrays, and the raw unfilered array of inputs
 * Returns the set with the highest repetitive frequency and 
-* checks to see if set is duplicate or new
+* if the set is a duplicate or invalid
 */
-function checkInput(array_of_sorted_sets) {
+function checkInput(array_of_sorted_sets, raw_array) {
     //this will hold the sets as keys and value is number of times
     //they've been duplicated
+    const fs = require('fs');
+    let unique_sets = 0;
+    let duplicate_sets = 0;
+    let non_duplicate_sets = 0;
+    let invalid_lines = 0;
     let set_freq = {};
     let input_line_number = 1;
     let highest_freq_set = {
         "set": [],
         "frequency": 0
     };
+    fs.writeFileSync("output.txt", "Output: \n");
     for (let array_line of array_of_sorted_sets) {
-        // console.log(input_line_number);
         if (array_line.indexOf('\u2205') !== -1) {
             // console.log("invalid input");
             // invalid_input_line_numbers.push(input_line_number);
+            fs.appendFileSync("output.txt", "False line " + input_line_number + ":" + " invalid \n")
+            invalid_lines++;
         }
         else if (set_freq[array_line] >= 0) {
             set_freq[array_line] += 1;
+            duplicate_sets++;
             // console.log(`${array_line} is a duplicate ${set_freq[array_line]}`)
+            // fs.appendFileSync("output.txt", "False line" + input_line_number + ":" + raw_array[input_line_number - 1] + "is a duplicate\n");
+            fs.appendFileSync("output.txt", "False line " + input_line_number+": "+raw_array[input_line_number-1]+"\n");
             if (set_freq[array_line] > highest_freq_set["frequency"]) {
                 highest_freq_set["set"] = array_line;
                 highest_freq_set["frequency"] = set_freq[array_line];
             }
+            if(set_freq[array_line]===1){
+                unique_sets--;
+            }
         }
         else {
             set_freq[array_line] = 0;
+            unique_sets++;
+            non_duplicate_sets++;
+            fs.appendFileSync("output.txt", "True line " + input_line_number+": "+raw_array[input_line_number-1]+"\n");
             // console.log(`${array_line} is new`)
         }
         input_line_number++;
     }
     // console.log(highest_freq_set);
     // return invalid_input_line_numbers;
-    return highest_freq_set;
+    console.log(`There were ${unique_sets} unique sets, ${non_duplicate_sets} non duplicate sets, ${duplicate_sets} duplicate sets, ${invalid_lines} invalid sets`);
+    console.log(`The set with the most frequent duplicate group was "${highest_freq_set.set}" with ${highest_freq_set.frequency} duplicates`);
 }
 /*
-* Parameters: array containing all the invalide lines, and the unsorted and unparsed array
+* Parameters: array containing all the invalid lines, and the unsorted and unparsed array
 * Writes the invalid lines to file 
 */
 function invalidWriteFile(invalid_lines, raw_array_set) {
     let invalid_lines_output = '';
     writeFilePromisified("./invalid_input.txt", 'List of Invalid Inputs-\n');
     appendFilePromisified("./invalid_input.txt", invalid_lines.size + ' lines were invalid out of ' + raw_array_set.length + ' lines\n');
-    for (let x of invalid_lines) {
-        let k = stringify(raw_array_set[x - 1]);
-        // invalid_lines_output += ("Line " + x + ": " + raw_array_set[x - 1] + '\n');
-        invalid_lines_output += ("Line " + x + ": " + k + '\n');
+    for (let line of invalid_lines) {
+        let stringified_line = stringify(raw_array_set[line - 1]);
+        invalid_lines_output += ("Line " + line + ": " + stringified_line + '\n');
     }
     return appendFilePromisified("./invalid_input.txt", invalid_lines_output);
 }
 //takes a string and returns a better representation of it
-function stringify(s) {
-    let a = s.split(',');
-    let k = JSON.stringify(a);
+function stringify(str) {
+    let arr = str.split(',');
+    str = JSON.stringify(arr);
     //removes array brackets
     let front_regex_array = /^\[/g;
     let back_regex_array = /\]$/g;
-    k = k.replace(/(?:\\[rn])+/g, "");
-    k = k.replace(front_regex_array, '');
-    k = k.replace(back_regex_array, '');
-    return k;
+    str = str.replace(/(?:\\[rn])+/g, "");
+    str = str.replace(front_regex_array, '');
+    str = str.replace(back_regex_array, '');
+    return str;
 
 }
 /*
@@ -155,14 +171,7 @@ function appendFilePromisified(filename, to_write) {
 }
 //gets the name of the input file
 const file_input = process.argv[2];
-console.time('init time');
 let parsed_arrays = read_and_parse_file('input.txt');
-console.time('timer');
 invalidWriteFile(parsed_arrays["invalid_lines"], parsed_arrays["raw"]);
-console.timeEnd('timer');
-console.log(checkInput(parsed_arrays["sorted"]));
-// invalid_input_return(invalid_lines, array_input["raw"]);
-console.timeEnd('init time');
-//check_input([["50 41 20"]]);
-// let invalid_linse = check_input(array_input);
+checkInput(parsed_arrays["sorted"], parsed_arrays["raw"]);
 
