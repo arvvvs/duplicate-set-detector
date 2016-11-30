@@ -1,5 +1,5 @@
 //reads the file and returns the contents in a sorted array
-function readFile(file_to_read) {
+function read_and_parse_file(file_to_read) {
     //file system reading
     const fs = require('fs');
     //name of the file we're using as input
@@ -12,16 +12,15 @@ function readFile(file_to_read) {
     //and adds each line to the array_of_arrays
     let i = 0;
     let line_number = 1;
-    let invalid_lines = new Set();
+    let invalid_lines_set = new Set();
     while (i < contents.length) {
         let j = contents.indexOf("\n", i);
         let raw_content_array = contents.substring(i, j);
         let check = 0;
-        raw_input_array.push(raw_content_array);
         let set_input = (contents.substring(i, j).split(","));
         let parsed_set = set_input.map((value) => {
             if (isNaN(Number(value)) || Number(value) === 0) {
-                invalid_lines.add(line_number)
+                invalid_lines_set.add(line_number)
                 return '\u2205';
             }
             else {
@@ -31,8 +30,9 @@ function readFile(file_to_read) {
         array_of_sorted_sets.push(parsed_set.sort((a, b) => { return a - b }));
         i = j + 1;
         line_number++;
+        raw_input_array.push(raw_content_array);
     }
-    return { "sorted": array_of_sorted_sets, "raw": raw_input_array, "invalid_lines": invalid_lines };
+    return { "sorted": array_of_sorted_sets, "raw": raw_input_array, "invalid_lines": invalid_lines_set };
 }
 
 function check_input(array_of_sorted_sets) {
@@ -74,7 +74,6 @@ function invalid_input_return(invalid_lines, raw_array_set) {
     console.time('timer');
     writeFilePromisified("./invalid_input.txt", 'List of Invalid Inputs-\n');
     for (let x of invalid_lines) {
-
         array_output += ("Line " + x + ": " + raw_array_set[x - 1] + '\n');
     }
     appendFilePromisified("./invalid_input.txt", array_output);
@@ -109,11 +108,10 @@ function appendFilePromisified(filename, to_write) {
         });
 }
 const file_input = process.argv[2];
-
 console.time('init time');
-let array_input = readFile('input.txt');
-invalid_input_return(array_input["invalid_lines"], array_input["raw"]);
-let invalid_lines_set = check_input(array_input["sorted"]);
+let parsed_arrays = read_and_parse_file('input.txt');
+invalid_input_return(parsed_arrays["invalid_lines"], parsed_arrays["raw"]);
+let invalid_lines_set = check_input(parsed_arrays["sorted"]);
 // invalid_input_return(invalid_lines, array_input["raw"]);
 console.timeEnd('init time');
 //check_input([["50 41 20"]]);
