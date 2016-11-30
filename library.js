@@ -175,6 +175,6 @@ if(file_input == undefined){
 let parsed_arrays = read_and_parse_file(file_input);
 invalidWriteFile(parsed_arrays["invalid_lines"], parsed_arrays["raw"]);
 checkInput(parsed_arrays["sorted"], parsed_arrays["raw"]);
-console.log("Duplicate and NonDuplicate lines in output.txt");
+console.log("Duplicate and non duplicate lines in output.txt");
 console.log("Invalid Input report in text file: invalid_input.txt");
 
